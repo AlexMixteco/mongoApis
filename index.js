@@ -167,15 +167,21 @@ async function obtenerUltimasMedicionesPorDispositivo(req, res) {
     
     
     async function insertarMediciones(req, res) {
-        try {
-            const data = req.body;
-            const datos = await mongo.mediciones.create(data);
+    try {
+        const data = req.body;
 
-            res.json(datos); 
-        } catch (err) {
-            console.error("Error al insertar datos:", err);   
-        }
+        
+        data.fechaHora = new Date();
+
+        const datos = await mongo.mediciones.create(data);
+
+        res.json(datos);
+    } catch (err) {
+        console.error("Error al insertar datos:", err);
+        res.status(500).json({ error: err.message });
     }
+}
+
     
 
  async function login(req, res) {
