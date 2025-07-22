@@ -9,6 +9,24 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 
+// Obtener las últimas mediciones por id del dispositivo
+async function obtenerUltimasMedicionesPorDispositivo(req, res) {
+  try {
+    const dispositivoId = req.params.id;
+
+    const data = await mongo.mediciones
+      .find({ "dispositivos.id": dispositivoId })
+      .sort({ fechaHora: -1 })
+      .limit(10); 
+
+    res.json(data);
+  } catch (err) {
+    console.error("Error al obtener mediciones por dispositivo:", err);
+    res.status(500).json({ error: 'Error al obtener datos' });
+  }
+}
+
+
   async function obtenerUsuarios(req, res) {
         try {
             const data = await mongo.usuarios.find({});
@@ -196,7 +214,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
   }
 }
 
-
+app.get("/api/mediciones/ultimasPorDispositivo/:id", obtenerUltimasMedicionesPorDispositivo);
 
 app.post('/api/login', login);
 

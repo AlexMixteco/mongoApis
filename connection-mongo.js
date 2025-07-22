@@ -25,9 +25,9 @@ const dispositivosSchema = new mongoose.Schema({
 
 
 const medicionesSchema = new mongoose.Schema({
-  valorAire: String,
-  valorHumedad: String,
-  valorTemperatura: String,
+  valorAire: Number,
+  valorHumedad: Number,
+  valorTemperatura: Number,
   probabilidadLluvia: String,
   fechaHora: Date,
   dispositivoId: String 
