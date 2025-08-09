@@ -6,6 +6,7 @@ app.use (cors());
 
 const mongo= require ('./connection-mongo');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 
@@ -188,7 +189,6 @@ async function obtenerUltimasMedicionesPorDispositivo(req, res) {
   try {
     const { correo, contrasenia } = req.body;
 
-    
     const usuario = await mongo.usuarios.findOne({ correo });
 
     if (!usuario) {
@@ -196,18 +196,17 @@ async function obtenerUltimasMedicionesPorDispositivo(req, res) {
     }
 
     
-    if (usuario.contrasenia !== contrasenia) {
+    const isMatch = await bcrypt.compare(contrasenia, usuario.contrasenia);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    
     const token = jwt.sign(
       { id: usuario._id, correo: usuario.correo },
       SECRET_KEY,
       { expiresIn: '2h' }
     );
 
-    
     res.json({
       token,
       usuarioId: usuario._id,
